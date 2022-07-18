@@ -1,8 +1,11 @@
 import React from 'react';
 import css from './ContactForm.module.css';
-import PropTypes from 'prop-types';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from '../../redux/contacts-actions';
+import { getContacts } from '../../redux/selectors';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const schema = yup.object().shape({
   name: yup
@@ -20,10 +23,30 @@ const initialValues = {
   number: '',
 };
 
-const ContactForm = ({ onSubmitProp }) => {
+const ContactForm = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
+  const checkRepeatName = name => {
+    return contacts.find(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
+    );
+  };
+
+  const checkRepeatNumber = number => {
+    return contacts.find(contact => contact.number === number);
+  };
+
   const handleSubmit = (values, actions) => {
     const { name, number } = values;
-    onSubmitProp(name, number);
+
+    if (checkRepeatName(name)) {
+      Notify.warning(`${name} is already in phonebook`);
+    } else if (checkRepeatNumber(number)) {
+      Notify.warning(`${number} is already in phonebook`);
+    } else {
+      dispatch(addContact(name, number));
+    }
+
     actions.resetForm();
   };
 
@@ -55,7 +78,3 @@ const ContactForm = ({ onSubmitProp }) => {
 };
 
 export default ContactForm;
-
-ContactForm.prototype = {
-  onSubmitProp: PropTypes.func.isRequired,
-};
