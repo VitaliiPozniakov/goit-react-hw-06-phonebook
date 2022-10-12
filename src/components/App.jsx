@@ -17,7 +17,7 @@ export default function App() {
       </Section>
 
       <Section title="Contacts">
-        {contacts.length > 1 && <Filter />}
+        {contacts.length > 0 && <Filter />}
         {contacts.length > 0 ? (
           <ContactList />
         ) : (
