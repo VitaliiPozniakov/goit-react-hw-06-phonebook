@@ -1,8 +1,10 @@
 import React from 'react';
 import { Input, Label, LabelText } from './Filter.styled';
-import { filterContacts } from '../../redux/contacts-actions';
+// import { filterContacts } from '../../redux/contacts-actions';
+import { filterContacts } from '../../redux/filter/filter-slice'
 import { useSelector, useDispatch } from 'react-redux';
-import { getFilter } from '../../redux/selectors';
+// import { getFilter } from '../../redux/selectors';
+import { getFilter } from '../../redux/filter/filter-selectors';
 
 const Filter = () => {
   const filter = useSelector(getFilter);

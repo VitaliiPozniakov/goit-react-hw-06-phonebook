@@ -3,9 +3,13 @@ import css from './ContactForm.module.css';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from '../../redux/contacts-actions';
-import { getContacts } from '../../redux/selectors';
+// import { addContact } from '../../redux/contacts-actions';
+import { addContact } from '../../redux/contacts/contacts-slice';
+// import { getContacts } from '../../redux/selectors';
+import { getContacts } from '../../redux/contacts/contacts-selectors';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+
+import { nanoid } from "nanoid";
 
 const schema = yup.object().shape({
   name: yup
@@ -27,8 +31,8 @@ const ContactForm = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(getContacts);
   const checkRepeatName = name => {
-    return contacts.find(
-      contact => contact.name.toLowerCase() === name.toLowerCase()
+    return contacts?.find(
+      contact => contact?.name?.toLowerCase() === name.toLowerCase()
     );
   };
 
@@ -44,7 +48,9 @@ const ContactForm = () => {
     } else if (checkRepeatNumber(number)) {
       Notify.warning(`${number} is already in phonebook`);
     } else {
-      dispatch(addContact(name, number));
+      const newElement = { id: nanoid(), name, number };
+      dispatch(addContact(newElement));
+      // dispatch(addContact(name, number));
     }
 
     actions.resetForm();
